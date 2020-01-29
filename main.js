@@ -20,7 +20,7 @@ m.mount(document.body, {
                     }
                 }, 'reset'),
                 a.button({ onclick: e => trie.reduce(mwords) }, 'reduce'),
-                a.button({ onclick: e => mwords = trie.create(trie.listCandidates(mwords)) }, 'list candidates'),
+                a.button({ onclick: e => candidates = trie.listCandidates(mwords) }, 'list candidates'),
                 pre(JSON.stringify(mwords.isWord)),
                 mwords.words ?
                 Object.keys(mwords.words).map(l => a.button({
