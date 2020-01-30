@@ -41,7 +41,11 @@ const reggae = new RegExp(/.*[\-äßöü\.].*]/ig);
 
 let complete = true;
 
+const hasVowel = str => /.*[aeiouy].*/ig.test(str);
+
+
 if (complete) {
+
 
     setTimeout(() =>
         fetch(aff)
@@ -53,8 +57,10 @@ if (complete) {
                         words = trie.create(Object
                             .keys(dictionary.dictionaryTable)
                             .filter(e => e.length < 8)
-                            //.filter((e, i) => i < 130)
+                            .filter((e, i) => i < 130000)
                             .filter(e => e !== e.toUpperCase())
+                            .map(e => e.toLowerCase())
+                            .filter(e => hasVowel(e))
                             .filter(e => e.indexOf('-') < 0)
                             .filter(e => e.indexOf('�') < 0)
                             .filter(e => e.indexOf('ä') < 0)
@@ -63,8 +69,6 @@ if (complete) {
                             .filter(e => e.indexOf('ü') < 0)
                             .filter(e => e.indexOf('.') < 0)
                             .map(e => reverse(e))
-                            .map(e => e.toLowerCase())
-
                         )
                         m.redraw();
                     }
@@ -78,10 +82,20 @@ if (complete) {
     words = trie.create([
         "pflegen",
         "legen",
+        "alias",
+        "elias",
+        "zwingen",
+        "bringen",
+        "zwei",
+        "brei",
+        "drei",
+        "dringen",
         "pflaster",
         "laster",
         "tragen",
         "lagen",
+        "ragen",
+        "tagen",
         "behagen"
     ].map(reverse))
 
