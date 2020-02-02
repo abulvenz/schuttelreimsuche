@@ -1,62 +1,92 @@
 import m from 'mithril';
-import { div, a, pre, ul, li, table, th, tr, td } from './tags';
+import { div, a, pre, ul, li, table, th, tr, td, input, br, hr } from './tags';
 
 import solver from './solver';
-import trie from './trie';
+import f from './f';
 const { keys } = Object;
 
-let mwords = {};
+let mwords = null;
 let word = '';
 let candidates = [];
-let byRest = [];
+let byRest = null;
 let shuttle = [];
+let logs = [];
+let firstWord = '';
+let secondWord = '';
+let selected = {};
+let selected2 = {};
+
+let showing = [];
+
+const log = str => logs.unshift(str);
+
+const split = word =>
+    f.use(word.search(/[aeiouy]/), pos => {
+        let begin = word.substring(0, pos);
+        let rest = word.substring(pos, word.length);
+        return { begin, rest };
+    });
+
+const toRest = words => {
+    let result = {};
+    words.forEach(word => {
+        const { begin, rest } = split(word);
+        let arr = result[rest] || [];
+        if (arr.indexOf(begin) < 0)
+            arr.push(begin);
+        result[rest] = arr;
+    });
+    keys(result).forEach(rest => {
+        if (result[rest].length < 2)
+            delete result[rest];
+    })
+    return result;
+};
 
 m.mount(document.body, {
     view: vnode => {
-        return [
-            div.container(
-                solver.ready() ? '' + solver.words().isWord : null,
+        return div.container([
+            solver.ready ? [
                 a.button({
                     onclick: e => {
-                        mwords = solver.words();
-                        word = '';
+                        byRest = toRest(solver.words())
                     }
-                }, 'reset'),
-                a.button({ onclick: e => trie.reduce(mwords) }, 'reduce'),
-                a.button({
+                }, '+'),
+                byRest ?
+                input({
+                    oninput: e => {
+                        const { begin, rest } = selected = split(e.target.value.toLowerCase());
+                        showing = byRest[rest] || [];
+                        firstWord = begin + rest;
+                        selected2 = {};
+                        secondWord = '';
+                    }
+                }) : null,
+                div(firstWord),
+                div(secondWord),
+                showing.map(begin => a.button({
+                    disabled: begin === selected.begin,
                     onclick: e => {
-                        candidates = trie.genCandidates(mwords);
-                        byRest = trie.search(candidates);
-                        shuttle = trie.shuttlerhyme(byRest, keys(candidates))
+                        if (secondWord === '') {
+                            secondWord = begin + selected.rest;
+                            selected2 = { begin }
+                            showing = [];
+                            showing = keys(byRest).filter(key => {
+                                if (key === selected.rest)
+                                    return false;
+                                return f.use(byRest[key], begins => begins.indexOf(selected.begin) > 0 && begins.indexOf(begin) > 0);
+                            });
+                        }
                     }
-                }, 'list candidates'),
-                pre(JSON.stringify(mwords.isWord)),
-                mwords.words ?
-                Object.keys(mwords.words).map(l => a.button({
-                    onclick: e => {
-                        mwords = mwords.words[l];
-                        word = word + l
+                }, selected2.begin !== undefined ? [selected2.begin + begin, br(), selected.begin + begin] : begin)),
+                hr(),
+                input({
+                    oninput: e => {
+                        shuttle = solver.words().filter(e_ => e_.indexOf(e.target.value) === 0)
                     }
-                }, l)) :
-                null,
-                solver.reverse(word),
-                /*  table(
-                      keys(byRest).map(rest =>
-                          tr(
-                              td(rest), keys(candidates).map(begin => td(byRest[rest].indexOf(begin) >= 0 ? begin : ''))
-                          )
-                      )
-                  ),*/
-
-                /*              ul(Object.keys(candidates).map(
-                    start => li(solver.reverse(start), '- ', candidates[start].map(solver.reverse).join(', '))
-
-                )),
-*/
-                pre(JSON.stringify(shuttle.map(s => s.rhymes.join(';')), null, 2))
-                // pre(JSON.stringify(candidates, null, 2)),
-                /* pre(JSON.stringify(mwords, null, 2)),*/
-            )
-        ]
+                }),
+                pre(shuttle.join(', ')),
+            ] : 'Not ready, please wait...'
+        ]);
     }
-})
+});
