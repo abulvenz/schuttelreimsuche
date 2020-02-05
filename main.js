@@ -89,7 +89,10 @@ m.mount(document.body, {
                 div(shuttle.join(', ')),
             ] : 'Bitte warten, lade den Wortschatz...',
             hr(),
-            a({ href: "https://github.com/abulvenz/schuttelreimsuche" }, 'Quelltext auf Github')
+            a({ href: "https://github.com/abulvenz/schuttelreimsuche" }, 'Quelltext auf Github'),
+            br(),
+            a({ href: "https://eismaenners.de/2020/02/02/wertfrei/ " }, 'Ein Beispiel für ein Gedicht'),
+
         ]);
     }
 });
