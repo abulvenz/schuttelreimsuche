@@ -1,8 +1,15 @@
 {
-  "dependencies": {
-    "mini.css": "^3.0.1",
-    "mithril": "^2.0.4",
-    "tagl-mithril": "^1.2.2",
-    "typo-js": "^1.1.0"
-  }
+    "dependencies": {
+        "mini.css": "^3.0.1",
+        "mithril": "^2.0.4",
+        "tagl-mithril": "^1.2.2",
+        "typo-js": "^1.1.0"
+    },
+    "scripts": {
+        "start": "parcel index.html",
+        "build": "parcel build --out-dir docs/ --public-url https://abulvenz.github.io/schuttelreimsuche index.html"
+    },
+    "devDependencies": {
+        "cssnano": "^4.1.10"
+    }
 }
