@@ -1,13 +1,11 @@
 import m from 'mithril';
-import { div, a, pre, ul, li, table, th, tr, td, input, br, hr } from './tags';
+import { div, a, pre, ul, li, table, th, tr, td, input, br, hr, h1, label, h2 } from './tags';
 
 import solver from './solver';
 import f from './f';
 const { keys } = Object;
 
-let mwords = null;
-let word = '';
-let candidates = [];
+
 let byRest = null;
 let shuttle = [];
 let logs = [];
@@ -15,7 +13,6 @@ let firstWord = '';
 let secondWord = '';
 let selected = {};
 let selected2 = {};
-
 let showing = [];
 
 const log = str => logs.unshift(str);
@@ -43,17 +40,17 @@ const toRest = words => {
     return result;
 };
 
+solver.whenReady(() => {
+    byRest = toRest(solver.words())
+});
+
 m.mount(document.body, {
     view: vnode => {
         return div.container([
-            solver.ready ? [
-                a.button({
-                    onclick: e => {
-                        byRest = toRest(solver.words())
-                    }
-                }, '+'),
-                byRest ?
-                input({
+            h1('Schüttelreimsuche'),
+            solver.ready() ? [
+                label({ for: 'rhyme1' }, 'Erstes Reimwort eingeben'),
+                input.$rhyme1({
                     oninput: e => {
                         const { begin, rest } = selected = split(e.target.value.toLowerCase());
                         showing = byRest[rest] || [];
@@ -61,7 +58,7 @@ m.mount(document.body, {
                         selected2 = {};
                         secondWord = '';
                     }
-                }) : null,
+                }),
                 div(firstWord),
                 div(secondWord),
                 showing.map(begin => a.button({
@@ -80,13 +77,18 @@ m.mount(document.body, {
                     }
                 }, selected2.begin !== undefined ? [selected2.begin + begin, br(), selected.begin + begin] : begin)),
                 hr(),
-                input({
+                h2('Wortschatzsuche'),
+                label({ for: 'words' }, 'Suche eingeben'),
+                input.$words({
+
                     oninput: e => {
                         shuttle = solver.words().filter(e_ => e_.indexOf(e.target.value) >= 0)
                     }
                 }),
                 div(shuttle.join(', ')),
-            ] : 'Not ready, please wait...'
+            ] : 'Bitte warten, lade den Wortschatz...',
+            hr(),
+            a({ href: "https://github.com/abulvenz/schuttelreimsuche" }, 'Quelltext auf Github')
         ]);
     }
 });

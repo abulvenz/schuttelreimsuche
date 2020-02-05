@@ -7,6 +7,7 @@ import aff from './de-DE/de-DE.aff';
 import dic from './de-DE/de-DE.dic';
 import f from './f';
 
+let callbacks = [];
 
 let dictionary = null;
 let words = null;
@@ -35,6 +36,7 @@ if (complete) {
                                                                 e.indexOf('ü') < 0 &&*/
                                 e.indexOf('.') < 0)
                         )
+                        callbacks.forEach(cb => cb())
                         m.redraw();
                     }
                 )))
@@ -68,4 +70,5 @@ if (complete) {
 export default {
     words: () => words,
     ready: () => !!dictionary,
+    whenReady: cb => callbacks.push(cb)
 }
