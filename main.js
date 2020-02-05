@@ -61,6 +61,7 @@ m.mount(document.body, {
                 }),
                 div(firstWord),
                 div(secondWord),
+                showing.length > 0 && secondWord === '' ? 'Zweites Wort auswählen' : null,
                 showing.map(begin => a.button({
                     disabled: begin === selected.begin,
                     onclick: e => {
@@ -75,7 +76,7 @@ m.mount(document.body, {
                             });
                         }
                     }
-                }, selected2.begin !== undefined ? [selected2.begin + begin, br(), selected.begin + begin] : begin)),
+                }, selected2.begin !== undefined ? [selected2.begin + begin, br(), selected.begin + begin] : begin + selected.rest)),
                 hr(),
                 h2('Wortschatzsuche'),
                 label({ for: 'words' }, 'Suche eingeben'),
