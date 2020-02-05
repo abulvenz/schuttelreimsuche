@@ -82,10 +82,10 @@ m.mount(document.body, {
                 hr(),
                 input({
                     oninput: e => {
-                        shuttle = solver.words().filter(e_ => e_.indexOf(e.target.value) === 0)
+                        shuttle = solver.words().filter(e_ => e_.indexOf(e.target.value) >= 0)
                     }
                 }),
-                pre(shuttle.join(', ')),
+                div(shuttle.join(', ')),
             ] : 'Not ready, please wait...'
         ]);
     }

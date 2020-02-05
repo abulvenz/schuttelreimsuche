@@ -29,10 +29,10 @@ if (complete) {
                             .filter(e => f.hasVowel(e) &&
                                 e.indexOf('-') < 0 &&
                                 e.indexOf('�') < 0 &&
-                                e.indexOf('ä') < 0 &&
-                                e.indexOf('ß') < 0 &&
-                                e.indexOf('ö') < 0 &&
-                                e.indexOf('ü') < 0 &&
+                                /*                                e.indexOf('ä') < 0 &&
+                                                                e.indexOf('ß') < 0 &&
+                                                                e.indexOf('ö') < 0 &&
+                                                                e.indexOf('ü') < 0 &&*/
                                 e.indexOf('.') < 0)
                         )
                         m.redraw();
