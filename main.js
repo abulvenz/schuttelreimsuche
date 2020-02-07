@@ -72,7 +72,7 @@ m.mount(document.body, {
                             showing = keys(byRest).filter(key => {
                                 if (key === selected.rest)
                                     return false;
-                                return f.use(byRest[key], begins => begins.indexOf(selected.begin) > 0 && begins.indexOf(begin) > 0);
+                                return f.use(byRest[key], begins => begins.indexOf(selected.begin) >= 0 && begins.indexOf(begin) >= 0);
                             });
                         }
                     }
@@ -92,7 +92,6 @@ m.mount(document.body, {
             a({ href: "https://github.com/abulvenz/schuttelreimsuche" }, 'Quelltext auf Github'),
             br(),
             a({ href: "https://eismaenners.de/2020/02/02/wertfrei/ " }, 'Ein Beispiel für ein Gedicht'),
-
         ]);
     }
 });
