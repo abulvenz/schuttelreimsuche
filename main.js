@@ -6,7 +6,7 @@ import f from './f';
 const { keys } = Object;
 
 
-let byRest = null;
+let startByRest = null;
 let shuttle = [];
 let logs = [];
 let firstWord = '';
@@ -41,7 +41,7 @@ const toRest = words => {
 };
 
 solver.whenReady(() => {
-    byRest = toRest(solver.words())
+    startByRest = toRest(solver.words())
 });
 
 m.mount(document.body, {
@@ -53,7 +53,7 @@ m.mount(document.body, {
                 input.$rhyme1({
                     oninput: e => {
                         const { begin, rest } = selected = split(e.target.value.toLowerCase());
-                        showing = byRest[rest] || [];
+                        showing = startByRest[rest] || [];
                         firstWord = begin + rest;
                         selected2 = {};
                         secondWord = '';
@@ -63,20 +63,26 @@ m.mount(document.body, {
                 div(secondWord),
                 showing.length > 0 && secondWord === '' ? 'Zweites Wort auswählen' : null,
                 showing.map(begin => a.button({
-                    disabled: begin === selected.begin,
-                    onclick: e => {
-                        if (secondWord === '') {
-                            secondWord = begin + selected.rest;
-                            selected2 = { begin }
-                            showing = [];
-                            showing = keys(byRest).filter(key => {
-                                if (key === selected.rest)
-                                    return false;
-                                return f.use(byRest[key], begins => begins.indexOf(selected.begin) >= 0 && begins.indexOf(begin) >= 0);
-                            });
+                        disabled: begin === selected.begin,
+                        onclick: e => {
+                            if (secondWord === '') {
+                                secondWord = begin + selected.rest;
+                                selected2 = { begin }
+                                showing = [];
+                                showing = keys(startByRest).filter(key => {
+                                    if (key === selected.rest)
+                                        return false;
+                                    return f.use(startByRest[key], begins => begins.indexOf(selected.begin) >= 0 && begins.indexOf(begin) >= 0);
+                                });
+                            }
                         }
-                    }
-                }, selected2.begin !== undefined ? [selected2.begin + begin, br(), selected.begin + begin] : begin + selected.rest)),
+                    },
+                    selected2.begin !== undefined ? [
+                        selected.begin, selected.rest, ' ', selected2.begin + begin,
+                        br(),
+                        selected2.begin, selected.rest, ' ', selected.begin + begin
+                    ] :
+                    begin + selected.rest)),
                 hr(),
                 h2('Wortschatzsuche'),
                 label({ for: 'words' }, 'Suche eingeben'),
