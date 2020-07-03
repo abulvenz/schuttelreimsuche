@@ -1,5 +1,5 @@
 import m from 'mithril';
-import { div, a, pre, ul, li, table, th, tr, td, input, br, hr, h1, label, h2 } from './tags';
+import { div, a, button, pre, ul, li, table, th, tr, td, input, br, hr, h1, label, h2 } from './tags';
 
 import solver from './solver';
 import f from './f';
@@ -14,6 +14,7 @@ let secondWord = '';
 let selected = {};
 let selected2 = {};
 let showing = [];
+let swapped = false;
 
 const log = str => logs.unshift(str);
 
@@ -44,6 +45,8 @@ solver.whenReady(() => {
     startByRest = toRest(solver.words())
 });
 
+const swap = (a1) => swapped ? a1 : a1.slice().reverse();
+
 m.mount(document.body, {
     view: vnode => {
         return div.container([
@@ -59,6 +62,7 @@ m.mount(document.body, {
                         secondWord = '';
                     }
                 }),
+                button({ toggled: swapped, onclick: e => swapped = !swapped }, '< >'),
                 div(firstWord),
                 div(secondWord),
                 showing.length > 0 && secondWord === '' ? 'Zweites Wort auswählen' : null,
@@ -78,9 +82,9 @@ m.mount(document.body, {
                         }
                     },
                     selected2.begin !== undefined ? [
-                        selected.begin, selected.rest, ' ', selected2.begin + begin,
+                        swap([selected.begin + selected.rest, ' ', selected2.begin + begin]),
                         br(),
-                        selected2.begin, selected.rest, ' ', selected.begin + begin
+                        swap([selected2.begin + selected.rest, ' ', selected.begin + begin])
                     ] :
                     begin + selected.rest)),
                 hr(),
